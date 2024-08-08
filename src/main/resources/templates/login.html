@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <title>StockGuard | Login</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="card m-4 p-4">
+            <div class="card-body">
+                <div class="justify-content-center">
+                    <h2>Welcome to StockGuard!</h2><br>
+                    <h2>Login</h2>
+
+                    <form th:action="@{/login}" method="post"><br>
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" /><br>
+                        <br>
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" /><br>
+                        <br>
+                        <button class="btn btn-primary" type="submit">Login</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer th:replace="fragments/fragment :: footer"></footer>
+
+</body>
+
+</html>

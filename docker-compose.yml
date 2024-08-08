@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  mysql:
+    image: saniarizqi/mysql
+    container_name: stockguard-mysql-1
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: stockguard
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - stockguard_network
+
+  app:
+    image: saniarizqi/stockguard
+    container_name: stockguard-app-1
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stockguard
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rootpass
+    depends_on:
+      - mysql
+    ports:
+      - "8007:8080"
+    networks:
+      - stockguard_network
+
+  phpmyadmin:
+    image: saniarizqi/phpmyadmin
+    container_name: phpmyadmin_container
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: rootpass
+    ports:
+      - "8087:80"
+    depends_on:
+      - mysql
+    networks:
+      - stockguard_network
+
+networks:
+  stockguard_network:
+    driver: bridge
+
+volumes:
+  mysql_data:

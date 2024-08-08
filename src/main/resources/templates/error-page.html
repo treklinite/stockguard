@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>StockGuard | Error</title>
+    <object th:include="fragments/fragment :: css" ></object>
+    <object th:include="fragments/fragment :: js" "></object>
+</head>
+
+<body>
+    <nav th:replace="fragments/fragment :: navbar (${true}, ${false}, ${false})"></nav><div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h1 th:text="'Maaf, ' + ${error} + '.'"></h1>
+                <br>
+                <a class="btn btn-primary" th:href="@{${url}}" th:text="'Kembali ke ' + ${pageTitle}"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/fragment :: footer"></footer>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>StockGuard</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+
+<body>
+<nav th:replace="fragments/fragment :: navbar (${false}, ${false}, ${false})"></nav>
+
+<!--<nav th:replace="fragments/fragment :: navbar"></nav>-->
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h1 th:text="'Selamat, ' + ${message} + '!'"></h1>
+                <br>
+                <a class="btn btn-primary" th:href="@{${url}}" th:text="'Kembali ke ' + ${pageTitle}"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/fragment :: footer"></footer>
+</body>
+</html>

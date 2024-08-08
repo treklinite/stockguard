@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragments</title>
+    <head th:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+        <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    </head>
+    <head th:fragment="js">
+        <script
+                src="https://code.jquery.com/jquery-3.4.1.min.js"
+                integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFIBw8HfCJo="
+                crossorigin="anonymous"
+        ></script>
+        <script
+                src="https://getbootstrap.com/docs/4.1/assets/js/vendor/popper.min.js"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+    </head>
+</head>
+<body>
+    <nav th:fragment="navbar (home, barang, notifikasi)" class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand font-weight-bold text-primary" th:href="@{/}"ß>StockGuard</a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup"
+                aria-expanded="false"
+                aria-label="Toggle Navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <a class="nav-item nav-link" th:classappend="${home} ? active : deactive" th:href="@{/}">
+                    Home<span class="sr-only"></span>
+                </a>
+                <a class="nav-item nav-link" th:classappend="${barang} ? active : deactive" th:href="@{/barang}">
+                    Barang<span class="sr-only"></span>
+                </a>
+                <a class="nav-item nav-link" th:classappend="${notifikasi} ? active : deactive" th:href="@{/notifications}">
+                    Notifikasi<span class="sr-only"></span>
+                </a>
+            </ul>
+            <form class="form-inline my-2 my-lg-0 mr-2" th:action="@{/barang/search}" method="GET">
+                <input class="form-control mr-sm-2" type="search"
+                       name="query" placeholder="Nama Barang" aria-label="Search">
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <form
+                    class="navbar-nav pull-right"
+                    th:action="@{/logout}"
+                    method="post"
+            >
+                <input
+                        type="hidden"
+                        name="${_csrf.parameterName}"
+                        value="${_csrf.token}"
+                />
+                <button class="btn btn-danger" type="submit">Logout</button>
+            </form>
+
+        </div>
+    </nav>
+<!--    <div th:fragment="footer"class="footer">-->
+<!--        <p>StockGuard @ 2024</p>-->
+<!--        <p th:text="${page}">-->
+<!--    </div>-->
+
+    <footer th:fragment="footer">
+        <p class="text-center">StockGuard @ 2024</p>
+    </footer>
+    </body>
+</html>

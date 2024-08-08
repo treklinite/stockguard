@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>StockGuard</title>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> -->
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<nav th:replace="fragments/fragment :: navbar (${true}, ${false}, ${false})"></nav>
+<br>
+<div class="text-center justify-content-center">
+    <h2 th:text="'Hello ' + ${user.username} + '!'" >Login as</h2>
+    <p> You Logged in as <strong th:text="${user.getRole()}"></strong></p>
+</div>
+<div th:if="${isAdmin}"  class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <a class="btn btn-primary" href="/kategori">Lihat Semua Kategori</a>
+                <a class="btn btn-primary" href="/user/all">Lihat Semua User</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="card m-4 p-2">
+        <div class="card-body">
+            <h2 class="text-center justify-content-center">Dashboard StockGuard</h2>
+            <br>
+            <h3>Statistik Stok Barang</h3>
+            <div th:if="${validBarang != null}">
+                <h6 th:if="${#lists.isEmpty(validBarang)}" class="pe-2">Belum ada barang</h6>
+                <table th:unless="${#lists.isEmpty(validBarang)}" id="tableStok" class="table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Stok</th>
+                        <th>Kategori</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="barang : ${validBarang}">
+                        <td th:text="${barang.nama}"></td>
+                        <td th:text="${barang.stok}"></td>
+                        <td th:text="${barang.kategori != null ? barang.kategori.nama : 'Tidak ada kategori'}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card m-4 p-2">
+        <div class="card-body">
+            <h3>Barang yang Segera Kadaluarsa</h3>
+            <div th:if="${barangKadaluarsa != null}">
+                <h6 th:if="${#lists.isEmpty(barangKadaluarsa)}" class="pe-2">Belum ada barang</h6>
+                <table th:unless="${#lists.isEmpty(barangKadaluarsa)}" id="tableKadaluarsa" class="table table-bordered">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Stok</th>
+                        <th>Tanggal Kadaluarsa</th>
+                        <th>Kategori</th>
+                        <th>Rekomendasi Tindakan</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry : ${rekomendasiTindakanList}">
+                        <td th:text="${entry.key.nama}"></td>
+                        <td th:text="${entry.key.stok}"></td>
+                        <td th:text="${entry.key.tanggalKadaluarsa}"></td>
+                        <td th:text="${entry.key.kategori != null ? entry.key.kategori.nama : 'Tidak ada kategori'}"></td>
+                        <td th:text="${entry.value}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Container -->
+    <div class="card m-4 p-2">
+        <div class="card-body">
+            <div style="width: 80%; margin: auto;">
+                <h3>Chart Jumlah Stok per Kategori</h3>
+                <canvas id="stokChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="card m-4 p-2">
+        <div class="card-body">
+            <div style="width: 80%; margin: auto;">
+                <h3>Chart Jumlah Barang Kadaluarsa per Kategori</h3>
+                <canvas id="kadaluarsaChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="JavaScript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mengambil data dari Thymeleaf
+            const kategori = /*[[${kategori}]]*/ [];
+            const jumlahStok = /*[[${jumlahStok}]]*/ [];
+            const jumlahKadaluarsa = /*[[${jumlahKadaluarsa}]]*/ [];
+
+            // Confirming data yang disematkan dalam format JavaScript yang benar
+            console.log('Kategori:', JSON.stringify(kategori));
+            console.log('Jumlah Stok:', JSON.stringify(jumlahStok));
+            console.log('Jumlah Kadaluarsa:', JSON.stringify(jumlahKadaluarsa));
+
+
+            // Chart.js untuk Chart Stok
+            const ctxStok = document.getElementById('stokChart').getContext('2d');
+            new Chart(ctxStok, {
+                type: 'bar',
+                data: {
+                    labels: kategori,
+                    datasets: [{
+                        label: 'Jumlah Stok',
+                        data: jumlahStok,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Chart.js untuk Chart Kadaluarsa
+            const ctxKadaluarsa = document.getElementById('kadaluarsaChart').getContext('2d');
+            new Chart(ctxKadaluarsa, {
+                type: 'bar',
+                data: {
+                    labels: kategori,
+                    datasets: [{
+                        label: 'Jumlah Kadaluarsa',
+                        data: jumlahKadaluarsa,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</div>
+
+<footer th:replace="fragments/fragment :: footer"></footer>
+
+</body>
+</html>

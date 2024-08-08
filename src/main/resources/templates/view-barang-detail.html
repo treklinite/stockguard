@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Item Detail</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar (${false}, ${true}, ${false})"></nav>
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <h2>Item Detail</h2>
+            <p><strong>Name:</strong> <span th:text="${barang.nama}"></span></p>
+            <p><strong>Stock:</strong> <span th:text="${barang.stok}"></span></p>
+            <p><strong>Expiry Date:</strong> <span th:text="${#temporals.format(barang.tanggalKadaluarsa, 'dd-MM-yyyy HH:mm')}"></span></p>
+<!--            <a th:href="@{/barang/update/__${barang.id}__}" class="btn btn-primary">Take Action</a>-->
+            <div>
+                <a type="button" class="btn btn-md btn-warning" th:href="@{/barang/{id}/retur(id=${barang.id})}">Retur</a>
+                <a type="button" class="btn btn-md btn-warning" th:href="@{/barang/{id}/diskon(id=${barang.id})}">Diskon</a>
+                <a type="button" class="btn btn-md btn-danger" th:href="@{/barang/{id}/delete(id=${barang.id})}">Hapus</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/fragment :: footer"></footer>
+</body>
+</html>

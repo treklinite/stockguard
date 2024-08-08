@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Add Barang</title>
+    <th:block th:replace="fragments/fragment :: css"></th:block>
+    <th:block th:replace="fragments/fragment :: js"></th:block>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"></head>
+<body>
+<nav th:replace="fragments/fragment :: navbar (${false}, ${true}, ${false})"></nav>
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <h2>Add Barang</h2>
+                <br>
+                <form th:action="@{/barang/add}" th:object="${barang}" method="POST">
+                    Nama Barang: <br>
+                    <input required class="form-control" type="text" name="nama"/>
+                    <br>
+
+                    Stok Barang: <br>
+                    <input class="form-control" type="number" name="stok"/>
+                    <br>
+
+                    Kategori: <br>
+                    <!--input class="form-control" type="number" name="stok"/-->
+
+                    <select class="form-control" name="kategori" id="idKategori" th:field="*{kategori}">
+                        <option selected value="">--Pilih Kategori--</option>
+                        <option th:each="kategori: ${listKategori}"
+                                th:value="${kategori.id}" th:text="${kategori.nama}">
+                        </option>
+                    </select>
+                    <br><br>
+
+                    Tanggal Kadaluarsa: <br>
+                    <input required class="form-control" type="datetime-local" name="tanggalKadaluarsa" />
+                    <br><br>
+
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <a class="btn btn-primary" href="/barang">Kembali</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/fragment :: footer"></footer>
+</body>
+</html>

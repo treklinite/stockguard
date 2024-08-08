@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Stockguard</title>
+    <th:block th:replace="fragments/fragment :: css"></th:block>
+    <th:block th:replace="fragments/fragment :: js"></th:block>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            $('#tabelbarang').DataTable({
+                columnDefs: [{ targets: [6], sortable: false }],
+                lengthMenu: [5, 10, 20]
+            });
+        });
+    </script>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar (${false}, ${true}, ${false})"></nav>
+<div class="container">
+    <div class="card m-4 p-2">
+        <div class="card-body">
+            <div class="justify-content-center">
+                <center><h2>Manajemen Barang</h2></center>
+                <br>
+                <!-- Check if listBarang is empty -->
+                <div th:if="${#lists.isEmpty(listBarang)}">
+                    <p>Belum ada barang.</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(listBarang)}">
+                    <table id="tabelbarang" class="table">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>ID Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Stok</th>
+                            <th>Tanggal Kadaluarsa</th>
+                            <th>Kategori</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="barang, iterationStatus : ${listBarang}">
+                            <td th:text="${iterationStatus.count}"></td>
+                            <td th:text="${barang.id}"></td>
+                            <td th:text="${barang.nama}"></td>
+                            <td th:text="${barang.stok}"></td>
+                            <td th:text="${barang.tanggalKadaluarsa}"></td>
+                            <td th:text="${barang.kategori.nama}"></td>
+                            <td>
+                                <div>
+                                    <a type="button" class="btn btn-md btn-warning" th:href="@{/barang/{id}/update(id=${barang.id})}">Ubah</a>
+                                    <a type="button" class="btn btn-md btn-warning" th:href="@{/barang/{id}/detail(id=${barang.id})}">Detail</a>
+                                    <a type="button" class="btn btn-md btn-danger" th:href="@{/barang/{id}/delete(id=${barang.id})}">Hapus</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <a type="button" class="btn btn-md btn-primary" href="/barang/add">Tambah Barang</a>
+                <a class="btn btn-primary" href="/">Kembali</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/fragment :: footer"></footer>
+</body>
+</html>

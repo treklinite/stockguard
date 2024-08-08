@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>StockGuard - Notifications</title>
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script>
+        function toggleNotifications() {
+            const unreadNotifications = document.getElementById('unreadNotifications');
+            const readNotifications = document.getElementById('readNotifications');
+            unreadNotifications.classList.toggle('d-none');
+            readNotifications.classList.toggle('d-none');
+        }
+    </script>
+</head>
+<body>
+<nav th:replace="fragments/fragment :: navbar (${false}, ${false}, ${true})"></nav>
+<br>
+<h2 style="text-align: center">Notifications</h2>
+<br>
+<div class="container">
+    <div class="card m-4 p-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <label class="switch">
+                    <input type="checkbox" id="notificationSwitch" onclick="toggleNotifications()">
+                    <span class="slider"></span>
+                    <span class="switch-label on">Unread</span>
+                    <span class="switch-label off">Read</span>
+                </label>
+            </div>
+
+            <div id="unreadNotifications">
+                <h3>Unread Notifications</h3>
+                <div class="d-flex justify-content-end mb-3">
+                    <form th:action="@{/notifications/mark-all-as-read}" method="post">
+                        <button type="submit" class="btn btn-sm btn-primary">Mark All as Read</button>
+                    </form>
+                </div>
+                <ul class="list-group">
+                    <li th:each="notification : ${unreadNotifications}" class="list-group-item">
+                        <div class="d-flex align-items-center">
+                            <a th:href="@{/barang/__${notification.barang.id}__/detail}" th:text="${notification.message}"></a>
+                            <span th:text="${#temporals.format(notification.tanggalNotifikasi, 'dd-MM-yyyy HH:mm')}"></span>
+                        </div>
+                        <div class="d-flex justify-content-end mb-3">
+                            <form th:action="@{/notifications/read/{id}(id=${notification.id})}" method="post">
+                                <button type="submit" class="btn btn-sm btn-primary">Mark as Read</button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="readNotifications" class="d-none">
+                <h3>Read Notifications</h3>
+                <ul class="list-group">
+                    <li th:each="notification : ${readNotifications}" class="list-group-item">
+                        <div class="d-flex align-items-center">
+                            <a th:href="@{/barang/__${notification.barang.id}__/detail}" th:text="${notification.message}"></a>
+                            <span th:text="${#temporals.format(notification.tanggalNotifikasi, 'dd-MM-yyyy HH:mm')}"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/fragment :: footer"></footer>
+</body>
+</html>
